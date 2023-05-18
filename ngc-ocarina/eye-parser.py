@@ -1,49 +1,63 @@
 import argparse
 import json
 import numpy as np
+import sqlite3
+import pandas as pd
+import os
 
-debug = True
+def read_db( inputPath: str ):
 
+    conn = sqlite3.connect(inputPath)
+    df = pd.read_sql("SELECT timestamp, origin_x, origin_y, origin_z, direction_x, direction_y, direction_z FROM hl2_gaze", conn)
 
-def read_json( inputPath: str ):
+    ## parsing timestamps
+    df['timestamp'] = pd.to_datetime(df['timestamp'], format="%Y-%m-%d %H:%M:%S.%f", errors='coerce') 
 
-    jsonFile = None
-    with open( inputPath) as f:
-        jsonFile = json.load(f)
+    ## dropping all NaN columns
+    df.dropna(axis=0, inplace=True)
+    
+    ## transforming into miliseconds
+    df['timestamp'] = df['timestamp'].values.astype(np.int64) // 10 ** 6
 
-    return jsonFile
+    formattedObject = []
+    df.apply( lambda row: parse_row(row, formattedObject), axis=1)
+    
+    return formattedObject
 
-def main( input: str ):
+def parse_row( row, formattedObject ):
 
-    timEyeData = []
+    gazeOrigin = { 'x': row['origin_x'], 'y': row['origin_y'], 'z': row['origin_z'] }
+    gazeDirection = { 'x': row['direction_x'], 'y': row['direction_y'], 'z': row['direction_z'] }
+    timestamp = f'{int(row["timestamp"])}-0 ' 
 
-    eyeData = read_json( input )
-    for index, row in enumerate(eyeData):
+    currentRow = {
+        "GazeOrigin": gazeOrigin,
+        "GazeDirection": gazeDirection,
+        "timestamp": timestamp
+    }
 
-        gazeOrigin = { 'x': row['origin_x'], 'y': row['origin_y'], 'z': row['origin_z'] }
-        gazeDirection = { 'x': row['direction_x'], 'y': row['direction_y'], 'z': row['direction_z'] }
-        timestamp = f'{row["timestamp"]}-0 ' 
+    formattedObject.append(currentRow)
 
-        currentTIMRow = {
-            "GazeOrigin": gazeOrigin,
-            "GazeDirection": gazeDirection,
-            "timestamp": timestamp
-        }
+def main( input: str, output: str ):
 
-        timEyeData.append(currentTIMRow)
+    eyeData = read_db( input )
 
+    outputPath = os.path.join(output, 'eye.json')
+    if( not os.path.exists(output) ):
+        os.makedirs(output)
 
-    with open('./eyetim.json', 'w') as f:
-        f.write(json.dumps(timEyeData))
+    with open(outputPath, 'w') as f:
+        f.write(json.dumps(eyeData))
 
 
 if __name__ == "__main__":
 
     ## Example: 
-    ## python voxelization2.py --pointcloudpath ./data/pointcloud/2023.03.15-20.36.42-pointcloud.json --outputpath ./outputs/voxelizations/2023.03.15-20.36.42-voxelized-pointcloud.json
+    ## python eye-parser.py -i /faststorage/OCARINA_ExtractedData/0293/0293_11.sqlite -o ../data/output/0293_11
 
-    parser = argparse.ArgumentParser(description='Arguments for point cloud voxelization.')
+    parser = argparse.ArgumentParser(description='This scripts aims to parse the Ocarina data stored into SQLite files to NYU backend format')
     parser.add_argument('-i', '--input', nargs=1, required=True, default='')
+    parser.add_argument('-o', '--output', nargs=1, required=True, default='')
 
     args = parser.parse_args()
-    main(args.input[0])
+    main(args.input[0],args.output[0])
