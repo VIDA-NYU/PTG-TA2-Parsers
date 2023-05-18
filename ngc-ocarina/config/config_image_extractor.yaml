@@ -1,0 +1,17 @@
+---
+ database_path: "/faststorage/OCARINA_ExtractedData/"
+ trial_list:
+  - ["0293", 11]
+ chunk_size: 10000
+ 
+ component_color:
+  mfd outboard: [0, 204, 0]
+  mfd inboard: [0, 0, 255]
+  fdvcp: [252, 0, 204]
+  cdu: [255, 0, 0]
+    
+ feeds:
+  hl2_rgb:
+   extract_images: false
+   extract_video: true
+   include_bbs: true

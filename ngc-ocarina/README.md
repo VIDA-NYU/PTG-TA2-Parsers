@@ -18,4 +18,11 @@ Repository containing scripts to parse Ocarina datasets into ARGUS format.
 
 **Example**: `python eye-parser.py -i /foo/0293_11.sqlite -o ./bar/0293_11`
 
+[*perception-parser.py*](https://github.com/VIDA-NYU/PTG-TA2-Parsers/blob/main/ngc-ocarina/eye-parser.py): TBD
 
+**Example**: `TBD`
+
+
+[*perception-parser.py*](https://github.com/VIDA-NYU/PTG-TA2-Parsers/blob/main/ngc-ocarina/eye-parser.py): TBD
+
+**Example**: `TBD`
