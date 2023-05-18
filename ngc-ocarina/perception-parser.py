@@ -73,20 +73,6 @@ def get_json_values(sql_df):
     sorted_json_data = sorted(json_values, key=lambda d: d['timestamp'].split('-')[0])
     return sorted_json_data
 
-def parse_row( row, formattedObject ):
-
-    gazeOrigin = { 'x': row['origin_x'], 'y': row['origin_y'], 'z': row['origin_z'] }
-    gazeDirection = { 'x': row['direction_x'], 'y': row['direction_y'], 'z': row['direction_z'] }
-    timestamp = f'{int(row["timestamp"])}-0 ' 
-
-    currentRow = {
-        "GazeOrigin": gazeOrigin,
-        "GazeDirection": gazeDirection,
-        "timestamp": timestamp
-    }
-
-    formattedObject.append(currentRow)
-
 def main( input: str, output: str ):
 
     sql_df = get_dataframe_from_sqlite(input, "hl2_rgb_bounding_boxes")
