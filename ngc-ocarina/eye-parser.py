@@ -53,7 +53,7 @@ def main( input: str, output: str ):
 if __name__ == "__main__":
 
     ## Example: 
-    ## python eye-parser.py -i /faststorage/OCARINA_ExtractedData/0293/0293_11.sqlite -o ../data/output/0293_11
+    ## python eye-parser.py -i /foo/0293_11.sqlite -o /bar/0293_11
 
     parser = argparse.ArgumentParser(description='This scripts aims to parse the Ocarina data stored into SQLite files to NYU backend format')
     parser.add_argument('-i', '--input', nargs=1, required=True, default='')
