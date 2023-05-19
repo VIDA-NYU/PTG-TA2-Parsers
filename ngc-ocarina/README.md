@@ -79,3 +79,7 @@ cd ..
 ```
 make api dash
 ```
+
+- You should see the image below by accessing [localhost:3000](localhost:3000)
+
+![ARGUS Interface](https://github.com/VIDA-NYU/PTG-TA2-Parsers/blob/main/argus.png?raw=true)
