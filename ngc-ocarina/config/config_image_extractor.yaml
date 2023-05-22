@@ -1,7 +1,7 @@
 ---
  database_path: "/faststorage/OCARINA_ExtractedData/"
  trial_list:
-  - ["0293", 11]
+  - ["0293", 16]
  chunk_size: 10000
  
  component_color:
